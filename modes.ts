@@ -1,8 +1,12 @@
 interface Mode {
     name: string
+    value: any
 }
 
+enum CreatedModes {}
+
 let currentMode = ""
+let currentModeVal: null
 let _modes: Mode[] = [];
 let deb = false
 
@@ -13,11 +17,12 @@ namespace modes {
     /**
     * Creates a new mode
     */
-    //% block="create mode $mode"
-    //% mode.defl=""
+    //% block="create mode $mode || with value $msg?"
+    //% mode.defl="mode1"
+    //% msg.defl=""
     //% group="Declares"
-    export function addMode(mode: string) {
-        const setMode: Mode = { name: mode };
+    export function addMode(mode: string, msg?: any) {
+        const setMode: Mode = { name: mode, value: msg };
 
         let index = -1;
 
@@ -36,11 +41,12 @@ namespace modes {
     /**
     * Sets the current mode
     */
-    //% block="set mode to $mode"
-    //% mode.defl=""
+    //% block="set mode to $mode || and set value to $msg?"
+    //% mode.defl="mode1"
     //% group="Declares"
-    export function setMode(mode: string) {
-        let setMode: Mode = { name: mode };
+    
+    export function setMode(mode: string, msg?: any) {
+        let setMode: Mode = { name: mode, value: msg };
 
         let index = -1;
 
@@ -49,6 +55,7 @@ namespace modes {
                 index = i;
                 deb = false
                 currentMode = setMode.name
+                currentModeVal = msg
                 break;
             }
         }
@@ -75,16 +82,18 @@ namespace modes {
         control.runInBackground(thenDo)
     }
 
-    //% block="when mode changed to $mode"
-    //% mode.defl=""
+    //% block="when mode changed to $mode with $value"
+    //% mode.defl="mode1"
     //% group="Events"
-    export function whenModeChanged(mode: string, thenDo: () => void) {
+    //% draggableParameters="rcmsg"
+    export function whenModeChanged(mode: string, thenDo: (value: any) => void) {
+        
         function run() {
             game.onUpdateInterval(1, function () {
                 if (currentMode == mode) {
                     if (deb == false) {
                         deb = true
-                        thenDo()
+                        thenDo(currentModeVal)
                     }
                 }
             })
@@ -96,5 +105,14 @@ namespace modes {
     //% group="Other"
     export function getCurrentMode(): any {
         return currentMode
+    }
+
+    //% block="get mode $mode value"
+    //% group="Other"
+    export function getValueOfMode(mode: string): any {
+        let foundMode = _modes.find(specMode => specMode.name === mode);
+        if (foundMode) { 
+            return foundMode.value
+        }
     }
 }
