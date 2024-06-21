@@ -10,8 +10,7 @@ let currentModeVal: null
 let _modes: Mode[] = [];
 let deb = false
 
-//% color="#f0483c" icon="\uf013"
-//% groups="['Other', 'Events', 'Declares']"
+//% color="#0099DB" icon="\uf013"
 namespace modes {
 
     /**
