@@ -1,73 +1,20 @@
-interface Mode {
-    name: string
-    value: any
-}
-
-enum CreatedModes {}
-
-let currentMode = ""
-let currentModeVal: null
-let _modes: Mode[] = [];
-let deb = false
-
+//  || and set value to $msg?
 //% color="#0099DB" icon="\uf013"
 namespace modes {
 
-    /**
-    * Creates a new mode
-    */
-    //% block="create mode $mode || with value $msg?"
-    //% mode.defl="mode1"
-    //% msg.defl=""
-    //% group="Declares"
-    export function addMode(mode: string, msg?: any) {
-        const setMode: Mode = { name: mode, value: msg };
+    let currentMode: number = modes.mode(0)
+    let deb = false
 
-        let index = -1;
-
-        for (let i = 0; i < _modes.length; i++) {
-            if (_modes[i].name === setMode.name) {
-                index = i;
-                break;
-            }
-        }
-
-        if (index === -1) {
-            _modes.push(setMode);
-        }
-    }
-
+    
     /**
     * Sets the current mode
     */
-    //% block="set mode to $mode || and set value to $msg?"
-    //% mode.defl="mode1"
+    //% block="set mode to $mode"
     //% group="Declares"
-    
-    export function setMode(mode: string, msg?: any) {
-        let setMode: Mode = { name: mode, value: msg };
-
-        let index = -1;
-
-        for (let i = 0; i < _modes.length; i++) {
-            if (_modes[i].name === setMode.name) {
-                index = i;
-                deb = false
-                currentMode = setMode.name
-                currentModeVal = msg
-                break;
-            }
-        }
-    }
-
-    //% block="print all modes"
-    //% x.defl=var
-    //% x.shadow=variables_get
-    //% group="Declares"
-    export function logModes(): void {
-        for (let i = 0; i < _modes.length; i++) {
-            console.log("mode : '" + _modes[i].name+"'")
-        }
+    //% mode.shadow="color_enum_shim"
+    export function setMode(mode: number) {
+        deb = false
+        currentMode = mode
     }
 
     /**
@@ -81,18 +28,18 @@ namespace modes {
         control.runInBackground(thenDo)
     }
 
-    //% block="when mode changed to $mode with $value"
-    //% mode.defl="mode1"
+    //% block="when mode changed to $mode"
+    //% mode.shadow="color_enum_shim"
     //% group="Events"
     //% draggableParameters="rcmsg"
-    export function whenModeChanged(mode: string, thenDo: (value: any) => void) {
+    export function whenModeChanged(mode: number, thenDo: () => void) {
         
         function run() {
             game.onUpdateInterval(1, function () {
                 if (currentMode == mode) {
                     if (deb == false) {
                         deb = true
-                        thenDo(currentModeVal)
+                        thenDo()
                     }
                 }
             })
@@ -106,12 +53,18 @@ namespace modes {
         return currentMode
     }
 
-    //% block="get mode $mode value"
-    //% group="Other"
-    export function getValueOfMode(mode: string): any {
-        let foundMode = _modes.find(specMode => specMode.name === mode);
-        if (foundMode) { 
-            return foundMode.value
-        }
+    //% shim=ENUM_GET
+    //% blockId=color_enum_shim
+    //% block="$arg"
+    //% enumName="Mode"
+    //% enumMemberName="mode"
+    //% enumInitialMembers="mode1"
+    //% enumPromptHint="Enter your mode name here..."
+    //% blockHidden=1
+    /**
+     * Method that returns mode
+     */
+    export function mode(arg: number) {
+        return arg;
     }
 }

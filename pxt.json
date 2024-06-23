@@ -3,8 +3,7 @@
     "version": "1.1.1",
     "description": "",
     "dependencies": {
-        "device": "*",
-        "BetterSettings": "github:S0m3randomguy/BetterSettings#2023.5.1"
+        "device": "*"
     },
     "files": [
         "main.blocks",
@@ -23,5 +22,6 @@
     "supportedTargets": [
         "arcade"
     ],
-    "preferredEditor": "tsprj"
+    "preferredEditor": "tsprj",
+    "icon": "https://static.wixstatic.com/media/b49a89_21c48feb7d9f48acac3db31dfbab4cc9~mv2.png"
 }
